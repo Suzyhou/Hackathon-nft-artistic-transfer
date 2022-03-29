@@ -8,14 +8,18 @@ function App() {
     
     const onInputChange = (e) => {
         setIsSelected(true)
-        setSelectedFile(e.target.file[0])
+        setSelectedFile(e.target.files[0])
     }
     const onFileUpload = (e) => {
         const formData = new FormData()
+        console.log(selectedFile)
         formData.append('file', selectedFile, selectedFile.name)
         fetch("http://127.0.0.1:8000/upload",{
             method:'POST',
-            body: formData
+            body: formData,
+            // headers: {
+            //     'Content-Type': selectedFile.type,
+            //   }
         })
         .then((response) => response.json())
         .then((data) => {

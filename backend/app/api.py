@@ -2,6 +2,7 @@ from fastapi import FastAPI,UploadFile,File
 from fastapi.middleware.cors import CORSMiddleware
 import cloudinary
 import cloudinary.uploader
+from typing import Optional
 from fastapi.encoders import jsonable_encoder
 import os
 
@@ -23,15 +24,17 @@ app.add_middleware(
 
 
 @app.post('/upload')
-async def upload_client_image(image: UploadFile = File(...)):
-    print(image.file)
+async def upload_client_image(file:Optional[UploadFile] = 123):
+    print('abc')
+    print(file)
+    print(file.file)
     try:
         os.mkdir("images")
         print(os.getcwd())
     except Exception as e:
         print(e) 
-    file_name = os.getcwd()+"/images/"+image.filename.replace(" ", "-")
+    file_name = os.getcwd()+"/images/"+file.filename.replace(" ", "-")
     with open(file_name,'wb+') as f:
-        f.write(image.file.read())
+        f.write(file.file.read())
         f.close()
-    return {"filename": image.filename}
+    return {"filename": file.filename}
