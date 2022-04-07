@@ -6,8 +6,10 @@ from typing import Optional
 
 from fastapi.encoders import jsonable_encoder
 import os
+from . import neural_transfer
 
 app = FastAPI()
+app.include_router(neural_transfer.router)
 
 origins = [
     "http://localhost:3000",
