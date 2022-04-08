@@ -12,8 +12,6 @@ from starlette.responses import StreamingResponse
 from fastapi.responses import FileResponse,Response
 from io import BytesIO
 
-PINATA_API ='013868e060a02261b6f3'
-PINATA_SECRET='b5cada7d298d69ee89068dc5f3158bfc84ef39475f59e7385adb21a85978b5dd'
 
 router = APIRouter()
 

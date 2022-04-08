@@ -5,17 +5,17 @@ const port = 3000;
 
 var sys = require('sys');
 var exec = require('child_process').exec;
-// const mint = require("./scripts/mint-nft.js");
+const mint = require("./scripts/mint-nft.js");
 
 
 
 app.get('/', (req, res) => {
-  // exec(
-  //   "npx hardhat run scripts/deploy.js --network rinkeby",
-  //   (error,stdout,stderr)=>{
-  //     console.log(stdout)
-  //   }
-  //   )
+  exec(
+    "npx hardhat run scripts/deploy.js --network rinkeby",
+    (error,stdout,stderr)=>{
+      console.log(stdout)
+    }
+    )
   res.send('Hello World!')
 })
 
