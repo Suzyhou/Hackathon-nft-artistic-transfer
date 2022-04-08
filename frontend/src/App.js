@@ -8,6 +8,7 @@ function App() {
     const [isSelected, setIsSelected] =useState(false)
     const [uploadSuccessful, setUploadSuccessful] = useState(false)
     const [transferPath,setTransferPath] = useState(null)
+    const [save_path, setSavePath] = useState('d.jpg')
     const onInputChange = (e) => {
         setIsSelected(true)
         setSelectedFile(e.target.files[0])
@@ -45,7 +46,6 @@ function App() {
     }
 
     const compileTransfer = (e)=>{
-        
         fetch("http://127.0.0.1:8000/neural-transfer",{
             method:'POST',    
             headers: {
@@ -54,7 +54,7 @@ function App() {
             body: JSON.stringify({
                 "content_path":orignFile,
                 "style_path":styleFile,
-                "save_path":"d.jpg"
+                "save_path":save_path
             })
         })
         .then(response => response.blob())
@@ -63,6 +63,22 @@ function App() {
             const imageObjectURL = URL.createObjectURL(imageBlob);
             setTransferPath(imageObjectURL);
             console.log(imageObjectURL);
+        });
+    }
+
+    const pinOnClick = (e)=>{
+        fetch(`http://127.0.0.1:8000/pin`,{
+            method:'POST',    
+            headers: {
+                'Content-Type': 'application/json'
+              },
+            body: JSON.stringify({
+                fileName:save_path
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data)
         });
     }
 
@@ -119,7 +135,8 @@ function App() {
                     <HStack>
                         <VStack>
                         <Image borderRadius={25} boxSize="300px" src={transferPath}></Image>
-                            <Button colorScheme="blue" onClick={compileTransfer}>Compile</Button>
+                        <Button colorScheme="blue" onClick={compileTransfer}>Compile</Button>
+                        <Button colorScheme="blue" onClick={pinOnClick}>Upload to Pinata</Button>
                         </VStack>
                     </HStack>
                     <Heading>Mint Your NFT</Heading>
