@@ -17,7 +17,7 @@ router = APIRouter()
 os.environ['TFHUB_MODEL_LOAD_FORMAT'] = 'COMPRESSED'
 mpl.rcParams['figure.figsize'] = (12, 12)
 mpl.rcParams['axes.grid'] = False
-# hub_model = hub.load('https://tfhub.dev/google/magenta/arbitrary-image-stylization-v1-256/2')
+hub_model = hub.load('https://tfhub.dev/google/magenta/arbitrary-image-stylization-v1-256/2')
 
 def tensor_to_image(tensor):
     tensor = tensor*255
@@ -60,11 +60,10 @@ class transferObject(BaseModel):
 def neural_transfer(
     transferObject:transferObject
     ):
-    # print(transferObject)
-    # content_image = load_img(f"./images/{transferObject.content_path}")
-    # style_image = load_img(f"./images/{transferObject.style_path}")
-    
-    # stylized_image = hub_model(tf.constant(content_image), tf.constant(style_image))[0]
-    # img = tensor_to_image(stylized_image)
-    # img.save(f"./output_image/{transferObject.save_path}")
-    return FileResponse(r"C:\Users\Allen Chiang\Documents\Studio\Hackathon-nft-artistic-transfer\backend\output_image\c.jpg",media_type='image/jpg')
+    print(transferObject)
+    content_image = load_img(f"./images/{transferObject.content_path}".replace(" ", "-"))
+    style_image = load_img(f"./images/{transferObject.style_path}".replace(" ", "-"))
+    stylized_image = hub_model(tf.constant(content_image), tf.constant(style_image))[0]
+    img = tensor_to_image(stylized_image)
+    img.save(f"./output_image/{transferObject.save_path}")
+    return FileResponse(rf"./output_image/{transferObject.save_path}",media_type='image/jpg')
