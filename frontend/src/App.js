@@ -9,6 +9,8 @@ function App() {
     const [uploadSuccessful, setUploadSuccessful] = useState(false)
     const [transferPath,setTransferPath] = useState(null)
     const [save_path, setSavePath] = useState('d.jpg')
+    const [pin_path, setPinPath] = useState(null)
+    const [mintRecept, setMintRecept] = useState(null)
     const onInputChange = (e) => {
         setIsSelected(true)
         setSelectedFile(e.target.files[0])
@@ -78,7 +80,8 @@ function App() {
         })
         .then(response => response.json())
         .then(data => {
-            console.log(data)
+            setPinPath(data)
+            console.log(data['IpfsHash'])
         });
     }
 
@@ -86,6 +89,24 @@ function App() {
         let targetId = e.target.id;
         setStyleFile(targetId);
     }
+
+    const mintOnClick = (e)=>{
+        fetch(`http://127.0.0.1:3333/mint`,{
+            method:'POST',    
+            headers: {
+                'Content-Type': 'application/json'
+              },
+            body: JSON.stringify({
+                dest:pin_path
+            })
+        })
+        .then(response => response.json())
+        .then(data=>{
+            console.log(data)
+            setMintRecept(data)
+        })
+    }
+
 
     return (
         <ChakraProvider>
@@ -140,7 +161,7 @@ function App() {
                         </VStack>
                     </HStack>
                     <Heading>Mint Your NFT</Heading>
-                    <Button colorScheme="blue">Mint</Button>
+                    <Button colorScheme="blue" onClick={mintOnClick}>Mint</Button>
                 </VStack>
             </Center> 
         </ChakraProvider>
