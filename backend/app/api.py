@@ -3,11 +3,13 @@ from fastapi.middleware.cors import CORSMiddleware
 import cloudinary
 import cloudinary.uploader
 from typing import Optional
-
 from fastapi.encoders import jsonable_encoder
 import os
+from . import neural_transfer,pinasta
 
 app = FastAPI()
+app.include_router(neural_transfer.router)
+app.include_router(pinasta.router)
 
 origins = [
     "http://localhost:3000",
