@@ -10,8 +10,10 @@ from pydantic import BaseModel
 router = APIRouter()
 
 
-PINATA_API =os.environ['PINATA_API']
-PINATA_SECRET=os.environ['PINATA_SECRET']
+# PINATA_API =os.environ['PINATA_API']
+# PINATA_SECRET=os.environ['PINATA_SECRET']
+
+
 base = "https://api.pinata.cloud/pinning/pinFileToIPFS"
 
 
