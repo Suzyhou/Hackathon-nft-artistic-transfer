@@ -1,5 +1,5 @@
 import {useState, useEffect} from "react"
-import { ChakraProvider,Center, VStack, HStack, Heading,Text, Button, SimpleGrid,Image} from "@chakra-ui/react"
+import { ChakraProvider,Center, VStack, HStack, Heading,Text, Button, SimpleGrid,Image,Spinner,Progress} from "@chakra-ui/react"
 
 function App() {
     const [orignFile, setOriginFile] = useState(null)
@@ -7,6 +7,9 @@ function App() {
     const [selectedFile, setSelectedFile] = useState(null)
     const [isSelected, setIsSelected] =useState(false)
     const [uploadSuccessful, setUploadSuccessful] = useState(false)
+    const [showSpinner, setShowSpinner] = useState(false)
+    const [showSpinner2, setShowSpinner2] = useState(false)
+    const [showSpinner3, setShowSpinner3] = useState(false)
     const [transferPath,setTransferPath] = useState(null)
     const [save_path, setSavePath] = useState('d.jpg')
     const [pin_path, setPinPath] = useState(null)
@@ -16,6 +19,7 @@ function App() {
         setSelectedFile(e.target.files[0])
     }
     const onFileUpload = (e) => {
+        setShowSpinner(true)
         const formData = new FormData()
         console.log(selectedFile)
         formData.append('file', selectedFile, selectedFile.image)
@@ -27,6 +31,7 @@ function App() {
         .then((data) => {
             console.log(data)
             setUploadSuccessful(!uploadSuccessful)
+            setShowSpinner(false)
             setOriginFile(data.filename)
         })
     }
@@ -48,6 +53,7 @@ function App() {
     }
 
     const compileTransfer = (e)=>{
+        setShowSpinner2(true)
         fetch("http://127.0.0.1:8000/neural-transfer",{
             method:'POST',    
             headers: {
@@ -65,10 +71,12 @@ function App() {
             const imageObjectURL = URL.createObjectURL(imageBlob);
             setTransferPath(imageObjectURL);
             console.log(imageObjectURL);
+            setShowSpinner2(false)
         });
     }
 
     const pinOnClick = (e)=>{
+        setShowSpinner3(true)
         fetch(`http://127.0.0.1:8000/pin`,{
             method:'POST',    
             headers: {
@@ -82,6 +90,8 @@ function App() {
         .then(data => {
             setPinPath(data)
             console.log(data['IpfsHash'])
+            console.log(data)
+            setShowSpinner3(false)
         });
     }
 
@@ -123,24 +133,36 @@ function App() {
                             size='lg' 
                             colorScheme='red' 
                             isDisabled={!isSelected} 
-                            onClick={onFileUpload}>
+                            onClick={onFileUpload}
+                            >
                                 Upload Photo
                         </Button>
+                        {
+                            showSpinner && (
+                                <Center><Spinner size='xl'></Spinner></Center>
+                            )
+                        }
                     </HStack>
                     <Text>Choose the artistic style</Text>
                     <HStack>
                         <SimpleGrid columns={3} spacing={8}>
                             <VStack>
                                 <Image borderRadius={25} boxSize="300px" src="images/starrynight.png"></Image>
-                                <Button colorScheme="blue" onClick={styleOnClick} id='starrynight.png'>Select</Button>
+                                <Button 
+                                    colorScheme="cyan" 
+                                    variant='outline'
+                                    onClick={styleOnClick} 
+                                    id='starrynight.png'
+                                    >    
+                                        Select</Button>
                             </VStack>
                             <VStack>
                                 <Image borderRadius={25} boxSize="300px" src="images/pixelart.png"></Image>
-                                <Button colorScheme="blue" onClick={styleOnClick} id="pixelart.png">Select</Button>
+                                <Button colorScheme="cyan" variant='outline' onClick={styleOnClick} id="pixelart.png">Select</Button>
                             </VStack>
                             <VStack>
                                 <Image borderRadius={25} boxSize="300px" src="images/abstract.png"></Image>
-                                <Button colorScheme="blue" onClick={styleOnClick} id="abstract.png">Select</Button>
+                                <Button colorScheme="cyan" variant='outline' onClick={styleOnClick} id="abstract.png">Select</Button>
                             </VStack>
                         </SimpleGrid>
                     </HStack>
@@ -155,9 +177,23 @@ function App() {
                     <Heading>Artistic Transfer</Heading>
                     <HStack>
                         <VStack>
-                        <Image borderRadius={25} boxSize="300px" src={transferPath}></Image>
+                        <HStack>
                         <Button colorScheme="blue" onClick={compileTransfer}>Compile</Button>
-                        <Button colorScheme="blue" onClick={pinOnClick}>Upload to Pinata</Button>
+                        {
+                            showSpinner2 && (
+                                <Center><Spinner size='xl'></Spinner></Center>
+                            )
+                        }
+                        </HStack>
+                        <Image borderRadius={25} boxSize="300px" src={transferPath}></Image>
+                        <HStack>
+                            <Button colorScheme="blue" onClick={pinOnClick}>Upload to Pinata</Button>
+                            {
+                            showSpinner3 && (
+                                <Center><Spinner size='xl'></Spinner></Center>
+                            )
+                            }
+                        </HStack>
                         </VStack>
                     </HStack>
                     <Heading>Mint Your NFT</Heading>
