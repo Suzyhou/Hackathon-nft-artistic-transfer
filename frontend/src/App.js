@@ -10,6 +10,7 @@ function App() {
     const [showSpinner, setShowSpinner] = useState(false)
     const [showSpinner2, setShowSpinner2] = useState(false)
     const [showSpinner3, setShowSpinner3] = useState(false)
+    const [showSpinner4, setShowSpinner4] = useState(false)
     const [transferPath,setTransferPath] = useState(null)
     const [save_path, setSavePath] = useState('d.jpg')
     const [pin_path, setPinPath] = useState(null)
@@ -101,6 +102,7 @@ function App() {
     }
 
     const mintOnClick = (e)=>{
+        setShowSpinner4(true)
         fetch(`http://127.0.0.1:3333/mint`,{
             method:'POST',    
             headers: {
@@ -114,6 +116,7 @@ function App() {
         .then(data=>{
             console.log(data)
             setMintRecept(data)
+            setShowSpinner4(false)
         })
     }
 
@@ -197,7 +200,15 @@ function App() {
                         </VStack>
                     </HStack>
                     <Heading>Mint Your NFT</Heading>
-                    <Button colorScheme="blue" onClick={mintOnClick}>Mint</Button>
+                    <HStack>
+                        <Button colorScheme="blue" onClick={mintOnClick}>Mint</Button>
+                        {
+                            showSpinner4 && (
+                                <Center><Spinner size='xl'></Spinner></Center>
+                            )
+                        }
+                    </HStack>
+                    
                 </VStack>
             </Center> 
         </ChakraProvider>
