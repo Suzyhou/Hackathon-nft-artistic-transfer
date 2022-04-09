@@ -1,0 +1,5 @@
+tensorflow
+tensorflow-hub
+pandas
+numpy
+fastapi
